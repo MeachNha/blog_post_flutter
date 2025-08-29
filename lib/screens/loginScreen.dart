@@ -1,97 +1,139 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:st_01/controller/imagepicker.dart';
-import 'package:st_01/controller/user.dart';
+import '../controller/auth_controller.dart';
+
 class Loginscreen extends StatelessWidget {
   Loginscreen({super.key});
-  bool success= false; // Initialize success variable
+
+  bool success = false; // Initialize success variable
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-
   final _passwordController = TextEditingController();
-
-  final UserController userController = Get.put(UserController());
+  final AuthController authController = Get.put(AuthController());
 
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
-      success=await userController.Login(
+      success = await authController.login(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      if(success){
+      if (success) {
         _emailController.clear();
         _passwordController.clear();
       }
     }
   }
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Login Screen'),
-        ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Text("Login your accoun"),
-                const SizedBox(height: 20),
-                SizedBox(height: 20,),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          label: Icon(Icons.email),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                                color: Colors.grey.shade400, width: 1),
-                          ),
-                        ),
 
-                      ),
-                      SizedBox(height: 15,),
-                      TextFormField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          label: Icon(Icons.lock),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(
-                                color: Colors.grey.shade400, width: 1),
-                          ),
+  @override
+  Widget build(BuildContext context) {
+    final darkBlue = Color(0xFF0D1B2A); // Dark Blue
+    final lightAqua = Color(0xFF7FFFD4); // Light Aqua
+
+    return Scaffold(
+      backgroundColor: darkBlue,
+      appBar: AppBar(
+        title: const Text('Login Screen'),
+        backgroundColor: darkBlue,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                "Login your account",
+                style: TextStyle(
+                  color: lightAqua,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _emailController,
+                      style: TextStyle(color: lightAqua),
+                      decoration: InputDecoration(
+                        label: Icon(Icons.email, color: lightAqua),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: lightAqua, width: 1),
                         ),
-                      ), SizedBox(height: 20,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Obx(() => userController.isLoading.value
-                              ? CircularProgressIndicator()
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: lightAqua, width: 2),
+                        ),
+                        hintText: "Email",
+                        hintStyle: TextStyle(color: lightAqua.withOpacity(0.7)),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      controller: _passwordController,
+                      style: TextStyle(color: lightAqua),
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        label: Icon(Icons.lock, color: lightAqua),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: lightAqua, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: lightAqua, width: 2),
+                        ),
+                        hintText: "Password",
+                        hintStyle: TextStyle(color: lightAqua.withOpacity(0.7)),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(
+                              () => authController.isLoading.value
+                              ? CircularProgressIndicator(color: lightAqua)
                               : ElevatedButton(
                             onPressed: _submit,
-                            child: Text("Login Account"),
-                          )),
-                          SizedBox(width: 20,),
-                          ElevatedButton(
-                              onPressed:(){ Get.toNamed('/register');},
-                              child: Text("register account")
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: lightAqua,
+                              foregroundColor: darkBlue,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: const Text("Login Account"),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                )
-
-              ],
-            ),
+                        ),
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Get.toNamed('/register');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: lightAqua,
+                            foregroundColor: darkBlue,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text("Register Account"),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
-
+}

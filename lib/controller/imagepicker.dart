@@ -15,4 +15,8 @@ class ImagepickerController extends GetxController{
        update();
      }
   }
+  void clearImage() {
+    fileImage = null;
+    update();
+  }
 }

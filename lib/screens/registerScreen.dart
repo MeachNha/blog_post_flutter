@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:st_01/controller/auth_controller.dart';
 import 'package:st_01/controller/imagepicker.dart';
-import 'package:st_01/controller/user.dart';
+import 'package:st_01/controller/auth_controller.dart';
 import '../controller/user.dart';
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -15,33 +16,8 @@ class RegisterScreen extends StatelessWidget {
 
   final _passwordController = TextEditingController();
 
-  final UserController userController = Get.put(UserController());
+  final AuthController authController = Get.put(AuthController());
   final ImagepickerController picker =Get.put(ImagepickerController());
-
-  Future<void> _submit() async {
-    if (_formKey.currentState!.validate()) {
-      if (picker.fileImage == null) {
-        Get.snackbar('Image Required', 'Please select an image before submitting.');
-        return;
-      }
-
-
-      success=await userController.CreateUser(
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-        image: picker.fileImage!, // force unwrapped safely after null check
-      );
-      if(success){
-        _nameController.clear();
-        _emailController.clear();
-        _passwordController.clear();
-        picker.fileImage = null;
-        picker.update();// Reset the image after successful submission
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,12 +102,19 @@ class RegisterScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Obx(() => userController.isLoading.value
-                            ? CircularProgressIndicator()
-                            : ElevatedButton(
-                          onPressed: _submit,
+                       ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              authController.register(
+                                name: _nameController.text,
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                                image: picker.fileImage!,
+                              );
+                            }
+                          },
                           child: Text("Create Account"),
-                        )),
+                        ),
                       ],
                     ),
                   ],

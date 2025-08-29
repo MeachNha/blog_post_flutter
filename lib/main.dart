@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
+import 'package:st_01/screens/commets_screen.dart';
 import 'package:st_01/screens/loginScreen.dart';
 import 'screens/mainScreen.dart';
+import 'screens/new_post_screen.dart';
 import 'screens/registerScreen.dart';
 import 'package:get_storage/get_storage.dart';
 void main() async {
@@ -22,12 +24,14 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: storage.read('token') != null ? '/main' : '/main',
+      initialRoute:storage.read('token') != null ? '/main' : '/login',
       getPages: [
         GetPage(name: '/', page: () => RegisterScreen()),
         GetPage(name: '/register', page: () => RegisterScreen()),
         GetPage(name: '/login', page: () => Loginscreen()),
         GetPage(name: '/main', page: () => Mainscreen()),
+        GetPage(name: '/comment', page: ()=>CommentsScreen()),
+        GetPage(name: '/newpost', page: () => CreatePostScreen()),
       ],
     );
   }

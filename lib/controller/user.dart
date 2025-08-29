@@ -13,10 +13,6 @@ class UserController extends GetxController {
       baseUrl: 'http://192.168.78.39:8001/api/',
     ),
   );
-  void logout() {
-    storage.erase(); // clear all stored data
-    Get.offAllNamed('/login'); // go back to login
-  }
   Future<bool> CreateUser({
     required String name,
     required String email,

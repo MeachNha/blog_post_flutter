@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:st_01/controller/post_controller.dart';
+import 'package:st_01/controller/userprofice_controller.dart';
 import 'package:st_01/models/lists.dart';
+import 'package:st_01/unils/utils.dart';
 class Storywidget extends StatelessWidget {
  Storywidget({super.key});
+ final PostController postController = Get.put(PostController());
+ final UserProfileController currentUser = Get.put(UserProfileController());
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -10,12 +16,11 @@ class Storywidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 15), // optional padding
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: fakeapi.length+1,
+        itemCount: postController.allpost.length+1,
         itemBuilder: (context, index) {
           if (index == 0) {
             double containerWidth = MediaQuery.of(context).size.width * 0.25;
             double containerHeight = MediaQuery.of(context).size.width * 0.55;
-
             return  Container(
               margin: EdgeInsets.only(right: 10, left: 10),
               width: containerWidth,
@@ -34,7 +39,13 @@ class Storywidget extends StatelessWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: Image.network(
+                            child: currentUser.user.image!= null
+                                ? Image.network('${BASE_URL+currentUser.user.image!}',
+                                    fit: BoxFit.cover,
+                                    height: MediaQuery.of(context).size.width * 0.55,
+                                    width: MediaQuery.of(context).size.width * 0.25,
+                                  )
+                                : Image.network(
                               myProfileImageUrl,
                               fit: BoxFit.cover,
                               width: double.infinity,
@@ -74,7 +85,7 @@ class Storywidget extends StatelessWidget {
             );
           }
           else{
-            final item = fakeapi[index-1];
+            final item = postController.allpost[index-1];
             return Container(
               height: MediaQuery.of(context).size.width * 0.10,
               margin: EdgeInsets.only(right: 10, left: index == 0 ? 10 : 0), // spacing between cards
@@ -83,8 +94,7 @@ class Storywidget extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      item['cover'] ?? 'https://via.placeholder.com/150',
+                    child: Image.network('${BASE_URL_POST+item.image!}',
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
@@ -99,7 +109,7 @@ class Storywidget extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 15,
                         backgroundImage: NetworkImage(
-                          item['image'] ?? 'https://via.placeholder.com/50',
+                          '${BASE_URL_POST+item.image!}',
                         ),
                       ),
                     ),
@@ -110,7 +120,7 @@ class Storywidget extends StatelessWidget {
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.25,
                       child: Text(
-                        item['description'] ?? '',
+                        '${item.body}',
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
